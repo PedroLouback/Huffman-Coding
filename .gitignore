@@ -1,0 +1,5 @@
+.vscode/settings.json
+build/app
+build/objects/src/main.o
+build/objects/src/list.o
+build/objects/src/huffman.o
