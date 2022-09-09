@@ -16,7 +16,7 @@ typedef struct Lista Lista;
 struct Item
 {
     string word;
-    int repetition_number;
+    double repetition_number;
 };
 
 struct Block

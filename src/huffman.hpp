@@ -7,11 +7,13 @@
 #include <unordered_map>
 #include <vector>
 #include <sstream>
+#include <assert.h>
 #include "list.hpp"
 
-using namespace std;
+    using namespace std;
 
 void ReadDocument(Lista *l);
 string WordTreatment(string word);
+void InsertionSort(Lista *l);
 
 #endif
