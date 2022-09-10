@@ -11,12 +11,14 @@ void Swap(Block *a, Block *b)
 void FLVazia(Lista *l)
 {
     l->first = new Block;
+    l->last = 0;
     l->last = l->first;
     l->first->prox = NULL;
 }
 
 void LInsert(Lista *l, Item d)
 {
+
     l->last->prox = new Block;
     l->last = l->last->prox;
     l->last->data = d;
@@ -28,6 +30,7 @@ void LImprime(Lista *l)
     Block *aux;
 
     aux = l->first->prox;
+    cout << "Lista desordenada: " << endl;
     while (aux != NULL)
     {
         cout << aux->data.word << " - " << aux->data.repetition_number << endl;

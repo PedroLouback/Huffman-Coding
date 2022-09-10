@@ -10,10 +10,27 @@
 #include <assert.h>
 #include "list.hpp"
 
-    using namespace std;
+using namespace std;
 
-void ReadDocument(Lista *l);
+typedef struct no
+{
+    Item group;
+    struct no *left, *right, *prox;
+} No;
+
+typedef struct
+{
+    No *first;
+    int size;
+} Huffman;
+
+void CreateHuffman(Huffman *huffman);
+void InsertSorted(Huffman *huffman, No *no);
+void FillHuffman(Lista *l, Huffman *huffman);
+void PrintHuffman(Huffman *Huffman);
+void PrintTree(No *raiz, int size);
+No *RemoveHuffman(Huffman *huffman);
+void ReadDocument(Lista *l, Huffman *huffman);
 string WordTreatment(string word);
-void InsertionSort(Lista *l);
 
 #endif

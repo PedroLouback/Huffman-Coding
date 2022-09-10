@@ -1,6 +1,131 @@
 #include "huffman.hpp"
 
-void ReadDocument(Lista *l)
+void CreateHuffman(Huffman *huffman)
+{
+    huffman->first = NULL;
+    huffman->size = 0;
+}
+
+void InsertSorted(Huffman *huffman, No *no)
+{
+    No *aux;
+
+    if (huffman->first == NULL)
+    {
+        huffman->first = no;
+    }
+    else if (no->group.repetition_number < huffman->first->group.repetition_number)
+    {
+        no->prox = huffman->first;
+        huffman->first = no;
+    }
+    else
+    {
+        aux = huffman->first;
+        while (aux->prox && aux->prox->group.repetition_number <= no->group.repetition_number)
+            aux = aux->prox;
+        no->prox = aux->prox;
+        aux->prox = no;
+    }
+    huffman->size++;
+}
+
+void FillHuffman(Lista *l, Huffman *huffman)
+{
+    Block *aux = l->first->prox;
+    No *new_no;
+    while (aux != NULL)
+    {
+        if (aux->data.repetition_number > 0)
+        {
+            new_no = new No;
+            if (new_no)
+            {
+                new_no->group.word = aux->data.word;
+                new_no->group.repetition_number = aux->data.repetition_number;
+                new_no->left = NULL;
+                new_no->right = NULL;
+                new_no->prox = NULL;
+                InsertSorted(huffman, new_no);
+            }
+            else
+            {
+                cout << "\nErro ao alocar memoria em preencher a tabela Huffman" << endl;
+                break;
+            }
+        }
+        aux = aux->prox;
+    }
+}
+
+void PrintHuffman(Huffman *huffman)
+{
+    No *aux = huffman->first->prox;
+
+    cout << "Lista ordenada: Tamanho: " << huffman->size << endl;
+    while (aux)
+    {
+        cout << aux->group.word << " - " << aux->group.repetition_number << endl;
+        aux = aux->prox;
+    }
+}
+
+No *RemoveHuffman(Huffman *huffman)
+{
+    No *aux = NULL;
+
+    if (huffman->first)
+    {
+        aux = huffman->first;
+        huffman->first = aux->prox;
+        aux->prox = NULL;
+        huffman->size--;
+    }
+
+    return aux;
+}
+
+No *HuffmanTree(Huffman *huffman)
+{
+    No *first, *second, *new_no;
+    Item aux;
+    while (huffman->size > 1)
+    {
+        first = RemoveHuffman(huffman);
+        second = RemoveHuffman(huffman);
+        new_no = new No;
+
+        if (new_no)
+        {
+            new_no->group.word = '+';
+            new_no->group.repetition_number = (first->group.repetition_number + second->group.repetition_number);
+            new_no->left = first;
+            new_no->right = second;
+            new_no->prox = NULL;
+
+            InsertSorted(huffman, new_no);
+        }
+        else
+        {
+            cout << "\nERRO ao alocar memoria em criar árvore de Huffman!" << endl;
+            break;
+        }
+    }
+    return huffman->first; // will return the beginning when there is only one node, or beginning, at the end if there is one node left
+}
+
+void PrintTree(No *root, int size)
+{
+    if (root->left == NULL && root->right == NULL)
+        cout << "\nFolha: " << root->group.word << " || Altura: " << size;
+    else
+    {
+        PrintTree(root->left, size + 1);
+        PrintTree(root->right, size + 1);
+    }
+}
+
+void ReadDocument(Lista *l, Huffman *huffman)
 {
     Item aux;
     Block *aux2;
@@ -10,6 +135,7 @@ void ReadDocument(Lista *l)
     double normalization = 0;
     vector<string> tokens;
     vector<string> verified_words;
+    No *tree;
 
     file.open("document.txt");
 
@@ -67,7 +193,7 @@ void ReadDocument(Lista *l)
             repetition_count = 0;
         }
     }
-    
+
     // search for maximum repetition
     aux2 = l->first->prox;
     max_repetition = aux2->data.repetition_number;
@@ -101,13 +227,9 @@ void ReadDocument(Lista *l)
         aux2 = aux2->prox;
     }
 
-    // sort the dynamic list
-    LImprime(l);
-    cout << "\n" << endl;
-    InsertionSort(l);
-    cout << "\nOrdenada: " << endl;
-    LImprime(l);
+    FillHuffman(l, huffman); // fill the huffman struct and sort the number of repetitions
 
+    tree = HuffmanTree(huffman);
 }
 
 string WordTreatment(string word)
@@ -125,27 +247,4 @@ string WordTreatment(string word)
     }
 
     return aux;
-}
-
-void InsertionSort(Lista *l)
-{
-    assert(l != NULL);
-
-    if (l->first != NULL)
-    {
-        for (Block *i = l->first; i->prox != NULL; i = i->prox)
-        {
-            Block *menor = i;
-            for (Block *j = i->prox; j != NULL; j = j->prox)
-            {
-                if (j->data.repetition_number < menor->data.repetition_number)
-                {
-                    menor = j;
-                }
-                Item aux = i->data;
-                i->data = menor->data;
-                menor->data = aux;
-            }
-        }
-    }
 }

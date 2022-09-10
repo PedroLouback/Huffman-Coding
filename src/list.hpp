@@ -29,6 +29,7 @@ struct Lista
 {
     Block *first;
     Block *last;
+    int size; // added list size
 };
 
 void FLVazia(Lista *l);
