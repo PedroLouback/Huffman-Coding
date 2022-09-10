@@ -125,6 +125,49 @@ void PrintTree(No *root, int size)
     }
 }
 
+void GenerateSequence(Lista *boolean_list, No *root, string way)
+{
+
+    Item aux;
+    string left_way, right_way;
+
+    if (root->left == NULL && root->right == NULL) // when it arrives at a sheet, it will pass the path to the new list that contains the boolean sequence
+    {
+        aux.word = root->group.word;
+        aux.sequence = way;
+        LInsert(boolean_list, aux);
+    }
+    else
+    {
+        left_way = way;
+        right_way = way;
+
+        left_way += "0";
+        right_way += "1";
+
+        GenerateSequence(boolean_list, root->left, left_way);
+        GenerateSequence(boolean_list, root->right, right_way);
+    }
+}
+
+void PrintSequence(Lista *boolean_list)
+{
+    Block *aux;
+    int cont = 0;
+
+    aux = boolean_list->first->prox;
+    cout << "\nLista de palavras com sequência booleana: " << endl;
+    while (aux != NULL)
+    {
+        cout << "Palavra: " << aux->data.word << " || Booleana: " << aux->data.sequence << endl;
+        cont++;
+        aux = aux->prox;
+    }
+
+    cout << "\n"
+         << cont << endl;
+}
+
 void ReadDocument(Lista *l, Huffman *huffman)
 {
     Item aux;
@@ -136,6 +179,9 @@ void ReadDocument(Lista *l, Huffman *huffman)
     vector<string> tokens;
     vector<string> verified_words;
     No *tree;
+    Lista boolean_list;
+
+    FLVazia(&boolean_list);
 
     file.open("document.txt");
 
@@ -230,6 +276,10 @@ void ReadDocument(Lista *l, Huffman *huffman)
     FillHuffman(l, huffman); // fill the huffman struct and sort the number of repetitions
 
     tree = HuffmanTree(huffman);
+
+    GenerateSequence(&boolean_list, tree, "");
+
+    PrintSequence(&boolean_list);
 }
 
 string WordTreatment(string word)

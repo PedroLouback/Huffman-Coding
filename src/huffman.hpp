@@ -30,6 +30,8 @@ void FillHuffman(Lista *l, Huffman *huffman);
 void PrintHuffman(Huffman *Huffman);
 void PrintTree(No *raiz, int size);
 No *RemoveHuffman(Huffman *huffman);
+void GenerateSequence(Lista *l, No *raiz, string way);
+void PrintSequence();
 void ReadDocument(Lista *l, Huffman *huffman);
 string WordTreatment(string word);
 

@@ -17,6 +17,7 @@ struct Item
 {
     string word;
     double repetition_number;
+    string sequence;
 };
 
 struct Block
