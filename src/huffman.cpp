@@ -155,7 +155,7 @@ void PrintSequence(Lista *boolean_list)
     Block *aux;
 
     aux = boolean_list->first->prox;
-    cout << "\nLista de palavras com sequência booleana: " << endl;
+    cout << "\nLista de palavras com suas codificações booleana: " << endl;
     while (aux != NULL)
     {
         cout << "Palavra: " << aux->data.word << " || Booleana: " << aux->data.sequence << endl;
@@ -235,6 +235,7 @@ void ReadDocument(Lista *l, Huffman *huffman)
         }
     }
 
+
     // search for maximum repetition
     aux2 = l->first->prox;
     max_repetition = aux2->data.repetition_number;
@@ -268,6 +269,9 @@ void ReadDocument(Lista *l, Huffman *huffman)
         aux2 = aux2->prox;
     }
 
+    cout << "\nLista com as palavras e suas normalizações: " << endl;
+    LImprime(l);
+
     FillHuffman(l, huffman); // fill the huffman struct and sort the number of repetitions
 
     tree = HuffmanTree(huffman);
@@ -284,7 +288,7 @@ void WriteBinaryFile(Lista *boolean_list, vector<string> tokens){
     Block *aux;
     ofstream binary_file;
     vector<bool> boolean_sequence;
-    binary_file.open("binarytext.bin");
+    binary_file.open("compact_text.bin");
 
     if(!binary_file){
         cout << "Arquivo não pode ser aberto" << endl;
@@ -310,6 +314,7 @@ void WriteBinaryFile(Lista *boolean_list, vector<string> tokens){
                     binary_file << boolean_sequence.at(k);
                 }
                 binary_file << " ";
+                boolean_sequence.clear();
             }
             aux = aux->prox;
         }

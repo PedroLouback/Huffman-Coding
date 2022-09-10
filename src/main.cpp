@@ -11,7 +11,7 @@ int main()
 
     ReadDocument(&l, &huffman);
 
-    cout << "\nA compactação foi feita e se encontra no arquivo binarytext.bin!" << endl;
+    cout << "\nA compactação foi feita e se encontra no arquivo compact_text.bin!\n" << endl;
 
     return 0;
 }

@@ -30,10 +30,9 @@ void LImprime(Lista *l)
     Block *aux;
 
     aux = l->first->prox;
-    cout << "Lista desordenada: " << endl;
     while (aux != NULL)
     {
-        cout << aux->data.word << " - " << aux->data.repetition_number << endl;
+        cout << "Palavra: " << aux->data.word << " || Normalização: " << aux->data.repetition_number << endl;
         aux = aux->prox;
     }
 }
