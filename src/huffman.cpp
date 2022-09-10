@@ -153,19 +153,14 @@ void GenerateSequence(Lista *boolean_list, No *root, string way)
 void PrintSequence(Lista *boolean_list)
 {
     Block *aux;
-    int cont = 0;
 
     aux = boolean_list->first->prox;
     cout << "\nLista de palavras com sequência booleana: " << endl;
     while (aux != NULL)
     {
         cout << "Palavra: " << aux->data.word << " || Booleana: " << aux->data.sequence << endl;
-        cont++;
         aux = aux->prox;
     }
-
-    cout << "\n"
-         << cont << endl;
 }
 
 void ReadDocument(Lista *l, Huffman *huffman)
@@ -280,6 +275,45 @@ void ReadDocument(Lista *l, Huffman *huffman)
     GenerateSequence(&boolean_list, tree, "");
 
     PrintSequence(&boolean_list);
+
+    WriteBinaryFile(&boolean_list, tokens);
+}
+
+void WriteBinaryFile(Lista *boolean_list, vector<string> tokens){
+
+    Block *aux;
+    ofstream binary_file;
+    vector<bool> boolean_sequence;
+    binary_file.open("binarytext.bin");
+
+    if(!binary_file){
+        cout << "Arquivo não pode ser aberto" << endl;
+        abort();
+    }
+
+    for (size_t i = 0; i < tokens.size(); i++)
+    {
+        aux = boolean_list->first->prox;
+        while (aux != NULL)
+        {
+            if(tokens.at(i) == aux->data.word){
+                for(size_t j = 0; j < aux->data.sequence.size(); j++){
+                    if (aux->data.sequence.at(j) == '0')
+                    {
+                        boolean_sequence.push_back(false);
+                    }
+                    else if (aux->data.sequence.at(j) == '1'){
+                        boolean_sequence.push_back(true);
+                    }
+                }
+                for(size_t k = 0; k < boolean_sequence.size(); k++){
+                    binary_file << boolean_sequence.at(k);
+                }
+                binary_file << " ";
+            }
+            aux = aux->prox;
+        }
+    }
 }
 
 string WordTreatment(string word)
