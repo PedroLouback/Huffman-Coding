@@ -36,7 +36,7 @@ void FillHuffman(Lista *l, Huffman *huffman)
     No *new_no;
     while (aux != NULL)
     {
-        if (aux->data.repetition_number > 0)
+        if (aux->data.repetition_number >= 0)
         {
             new_no = new No;
             if (new_no)
@@ -65,11 +65,12 @@ void PrintHuffman(Huffman *huffman)
     cout << "Lista ordenada: Tamanho: " << huffman->size << endl;
     while (aux)
     {
-        cout << aux->group.word << " - " << aux->group.repetition_number << endl;
+        cout << aux->group.word << " || " << aux->group.repetition_number << endl;
         aux = aux->prox;
     }
 }
 
+// how the list is sorted remover values from start
 No *RemoveHuffman(Huffman *huffman)
 {
     No *aux = NULL;
@@ -107,7 +108,7 @@ No *HuffmanTree(Huffman *huffman)
         }
         else
         {
-            cout << "\nERRO ao alocar memoria em criar árvore de Huffman!" << endl;
+            cout << "\nERRO ao alocar memoria ao criar árvore de Huffman!" << endl;
             break;
         }
     }
@@ -116,6 +117,7 @@ No *HuffmanTree(Huffman *huffman)
 
 void PrintTree(No *root, int size)
 {
+
     if (root->left == NULL && root->right == NULL)
         cout << "\nFolha: " << root->group.word << " || Altura: " << size;
     else
@@ -142,8 +144,8 @@ void GenerateSequence(Lista *boolean_list, No *root, string way)
         left_way = way;
         right_way = way;
 
-        left_way += "0";
-        right_way += "1";
+        left_way += '0';
+        right_way += '1';
 
         GenerateSequence(boolean_list, root->left, left_way);
         GenerateSequence(boolean_list, root->right, right_way);
@@ -154,13 +156,23 @@ void PrintSequence(Lista *boolean_list)
 {
     Block *aux;
 
+    ofstream sequencefile;
+    sequencefile.open("sequence.txt");
+
+    if (!sequencefile)
+    {
+        cout << "Arquivo não pode ser aberto" << endl;
+        abort();
+    }
+
     aux = boolean_list->first->prox;
-    cout << "\nLista de palavras com suas codificações booleana: " << endl;
+    sequencefile << "\nLista de palavras com suas codificações booleana: " << endl;
     while (aux != NULL)
     {
-        cout << "Palavra: " << aux->data.word << " || Booleana: " << aux->data.sequence << endl;
+        sequencefile << "Palavra: " << aux->data.word << " || Booleana: " << aux->data.sequence << endl;
         aux = aux->prox;
     }
+    sequencefile.close();
 }
 
 void ReadDocument(Lista *l, Huffman *huffman)
@@ -193,6 +205,7 @@ void ReadDocument(Lista *l, Huffman *huffman)
             }
         }
     }
+
 
     // the recurrence will be checked by taking one by one, traversing the entire text counting the recurrence
 
@@ -269,26 +282,20 @@ void ReadDocument(Lista *l, Huffman *huffman)
         aux2 = aux2->prox;
     }
 
-    cout << "\nLista com as palavras e suas normalizações: " << endl;
-    LImprime(l);
-
     FillHuffman(l, huffman); // fill the huffman struct and sort the number of repetitions
 
     tree = HuffmanTree(huffman);
 
     GenerateSequence(&boolean_list, tree, "");
-
-    PrintSequence(&boolean_list);
-
+    
     WriteBinaryFile(&boolean_list, tokens);
 }
 
 void WriteBinaryFile(Lista *boolean_list, vector<string> tokens){
 
     Block *aux;
-    ofstream binary_file;
+    ofstream binary_file("compact_text.bin", ios::out | ios::binary);
     vector<bool> boolean_sequence;
-    binary_file.open("compact_text.bin");
 
     if(!binary_file){
         cout << "Arquivo não pode ser aberto" << endl;
@@ -313,12 +320,12 @@ void WriteBinaryFile(Lista *boolean_list, vector<string> tokens){
                 for(size_t k = 0; k < boolean_sequence.size(); k++){
                     binary_file << boolean_sequence.at(k);
                 }
-                binary_file << " ";
                 boolean_sequence.clear();
             }
             aux = aux->prox;
         }
     }
+    binary_file.close();
 }
 
 string WordTreatment(string word)
