@@ -36,3 +36,26 @@ void LImprime(Lista *l)
         aux = aux->prox;
     }
 }
+
+void InsertionSort(Lista *l)
+{
+    assert(l != NULL);
+
+    if (l->first != NULL)
+    {
+        for (Block *i = l->first; i->prox != NULL; i = i->prox)
+        {
+            Block *menor = i;
+            for (Block *j = i->prox; j != NULL; j = j->prox)
+            {
+                if (j->data.repetition_number < menor->data.repetition_number)
+                {
+                    menor = j;
+                }
+                Item aux = i->data;
+                i->data = menor->data;
+                menor->data = aux;
+            }
+        }
+    }
+}

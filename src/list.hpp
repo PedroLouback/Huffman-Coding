@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string>
+#include <assert.h>
 
 using namespace std;
 
@@ -37,5 +38,6 @@ void FLVazia(Lista *l);
 void LInsert(Lista *l, Item d);
 void Swap(Block *a, Block *b);
 void LImprime(Lista *l);
+void InsertionSort(Lista *l);
 
 #endif

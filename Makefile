@@ -1,12 +1,12 @@
-CXX      := -g++
-CXXFLAGS := -Wall -Wextra -Werror
-LDFLAGS  := -lstdc++ -lm
-BUILD    := ./build
+CXX	     := -g++
+CXXFLAGS := -pedantic-errors -Wall -Wextra -Werror
+LDFLAGS	 := -lstdc++ -lm
+BUILD 	 := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)/
 TARGET   := app
 INCLUDE  := -Iinclude/
-SRC      :=  $(wildcard src/*.cpp)
+SRC			 := $(wildcard src/*.cpp)
 
 OBJECTS := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 
@@ -26,7 +26,7 @@ build:
 	@mkdir -p $(APP_DIR)
 	@mkdir -p $(OBJ_DIR)
 
-debug: CXXFLAGS += -DDEBUG -g
+debug : CXXFLAGS += -DDEBUG -g
 debug: all
 
 release: CXXFLAGS += -O3
@@ -37,4 +37,4 @@ clean:
 	-@rm -rvf $(APP_DIR)/*
 
 run:
-	./$(BUILD)/$(TARGET)
+		./$(BUILD)/$(TARGET)
