@@ -1,146 +1,181 @@
 #include "huffman.hpp"
 
-#define MAX_TREE_HT 100
-
-QueueNode *newNode(string words, double repetition_number)
+void CreateHuffman(Huffman *huffman)
 {
-    QueueNode *temp = new QueueNode;
-    temp->left = temp->right = NULL;
-    temp->group.word = words;
-    temp->group.repetition_number = repetition_number;
-    return temp;
+    huffman->first = NULL;
+    huffman->size = 0;
 }
 
-Queue *createQueue(int capacity)
+void InsertSorted(Huffman *huffman, No *no)
 {
-    Queue *queue = new Queue[(sizeof(Queue))];
-    queue->front = queue->rear = -1;
-    queue->capacity = capacity;
-    queue->array = new QueueNode *[(queue->capacity * sizeof(QueueNode *))];
-    return queue;
-}
+    No *aux;
 
-int isSizeOne(Queue *queue)
-{
-    return queue->front == queue->rear && queue->front != -1;
-}
-
-int isEmpty(Queue *queue)
-{
-    return queue->front == -1;
-}
-
-int isFull(Queue *queue)
-{
-    return queue->rear == queue->capacity - 1;
-}
-
-void InsertQueue(Queue *queue, QueueNode *item)
-{
-    if (isFull(queue))
-        return;
-    queue->array[++queue->rear] = item;
-    if (queue->front == -1)
-        ++queue->front;
-}
-
-QueueNode *RemoveQueue(Queue *queue)
-{
-    if (isEmpty(queue))
-        return NULL;
-    QueueNode *temp = queue->array[queue->front];
-    if (queue->front == queue->rear)
-        queue->front = queue->rear = -1;
+    if (huffman->first == NULL)
+    {
+        huffman->first = no;
+    }
+    else if (no->group.repetition_number < huffman->first->group.repetition_number)
+    {
+        no->prox = huffman->first;
+        huffman->first = no;
+    }
     else
-        ++queue->front;
-    return temp;
-}
-
-QueueNode *getFront(Queue *queue)
-{
-    if (isEmpty(queue))
-        return NULL;
-    return queue->array[queue->front];
-}
-
-QueueNode *findMin(Queue *firstQueue, Queue *secondQueue)
-{
-    if (isEmpty(firstQueue))
-        return RemoveQueue(secondQueue);
-    if (isEmpty(secondQueue))
-        return RemoveQueue(firstQueue);
-    if (getFront(firstQueue)->group.repetition_number < getFront(secondQueue)->group.repetition_number)
-        return RemoveQueue(firstQueue);
-
-    return RemoveQueue(secondQueue);
-}
-
-int isLeaf(QueueNode *root)
-{
-    return !(root->left) && !(root->right);
-}
-
-void printArr(int arr[], int n)
-{
-    int i;
-    for (i = 0; i < n; i++)
-        cout << arr[i];
-    cout << endl;
-}
-
-QueueNode *HuffmanTree(vector<string> words, vector<double> freq, int size)
-{
-    QueueNode *left, *right, *top;
-
-    Queue *firstQueue = createQueue(size);
-    Queue *secondQueue = createQueue(size);
-
-    for (int i = 0; i < size; i++)
-        InsertQueue(firstQueue, newNode(words[i], freq[i]));
-
-    while (!(isEmpty(firstQueue) && isSizeOne(secondQueue)))
     {
-        left = findMin(firstQueue, secondQueue);
-        right = findMin(firstQueue, secondQueue);
-
-        top = newNode("$", left->group.repetition_number + right->group.repetition_number);
-        top->left = left;
-        top->right = right;
-        InsertQueue(secondQueue, top);
+        aux = huffman->first;
+        while (aux->prox && aux->prox->group.repetition_number <= no->group.repetition_number)
+            aux = aux->prox;
+        no->prox = aux->prox;
+        aux->prox = no;
     }
-    return RemoveQueue(secondQueue);
+    huffman->size++;
 }
 
-void printCodes(QueueNode *root, int arr[], int top)
+void FillHuffman(Lista *l, Huffman *huffman)
 {
-    if (root->left)
+    Block *aux = l->first->prox;
+    No *new_no;
+    while (aux != NULL)
     {
-        arr[top] = 0;
-        printCodes(root->left, arr, top + 1);
-    }
-
-    if (root->right)
-    {
-        arr[top] = 1;
-        printCodes(root->right, arr, top + 1);
-    }
-
-    if (isLeaf(root))
-    {
-        cout << root->group.word << ": ";
-        printArr(arr, top);
+        if (aux->data.repetition_number >= 0)
+        {
+            new_no = new No;
+            if (new_no)
+            {
+                new_no->group.word = aux->data.word;
+                new_no->group.repetition_number = aux->data.repetition_number;
+                new_no->left = NULL;
+                new_no->right = NULL;
+                new_no->prox = NULL;
+                InsertSorted(huffman, new_no);
+            }
+            else
+            {
+                cout << "\nErro ao alocar memoria em preencher a tabela Huffman" << endl;
+                break;
+            }
+        }
+        aux = aux->prox;
     }
 }
 
-void HuffmanCodes(vector<string> words, vector<double> freq, int size)
+void PrintHuffman(Huffman *huffman)
+{
+    No *aux = huffman->first->prox;
+
+    cout << "Lista ordenada: Tamanho: " << huffman->size << endl;
+    while (aux)
+    {
+        cout << aux->group.word << " || " << aux->group.repetition_number << endl;
+        aux = aux->prox;
+    }
+}
+
+// how the list is sorted remover values from start
+No *RemoveHuffman(Huffman *huffman)
+{
+    No *aux = NULL;
+
+    if (huffman->first)
+    {
+        aux = huffman->first;
+        huffman->first = aux->prox;
+        aux->prox = NULL;
+        huffman->size--;
+    }
+
+    return aux;
+}
+
+No *HuffmanTree(Huffman *huffman)
+{
+    No *first, *second, *new_no;
+    Item aux;
+    while (huffman->size > 1)
+    {
+        first = RemoveHuffman(huffman);
+        second = RemoveHuffman(huffman);
+        new_no = new No;
+
+        if (new_no)
+        {
+            new_no->group.word = '+';
+            new_no->group.repetition_number = (first->group.repetition_number + second->group.repetition_number);
+            new_no->left = first;
+            new_no->right = second;
+            new_no->prox = NULL;
+
+            InsertSorted(huffman, new_no);
+        }
+        else
+        {
+            cout << "\nERRO ao alocar memoria ao criar árvore de Huffman!" << endl;
+            break;
+        }
+    }
+    return huffman->first; // will return the beginning when there is only one node, or beginning, at the end if there is one node left
+}
+
+void PrintTree(No *root, int size)
 {
 
-    QueueNode *root = HuffmanTree(words, freq, size);
-
-    int arr[MAX_TREE_HT], top = 0;
-    printCodes(root, arr, top);
+    if (root->left == NULL && root->right == NULL)
+        cout << "\nFolha: " << root->group.word << " || Altura: " << size;
+    else
+    {
+        PrintTree(root->left, size + 1);
+        PrintTree(root->right, size + 1);
+    }
 }
-void ReadDocument(Lista *l)
+
+void GenerateSequence(Lista *boolean_list, No *root, string way)
+{
+
+    Item aux;
+    string left_way, right_way;
+
+    if (root->left == NULL && root->right == NULL) // when it arrives at a sheet, it will pass the path to the new list that contains the boolean sequence
+    {
+        aux.word = root->group.word;
+        aux.sequence = way;
+        LInsert(boolean_list, aux);
+    }
+    else
+    {
+        left_way = way;
+        right_way = way;
+
+        left_way += '0';
+        right_way += '1';
+
+        GenerateSequence(boolean_list, root->left, left_way);
+        GenerateSequence(boolean_list, root->right, right_way);
+    }
+}
+
+void PrintSequence(Lista *boolean_list)
+{
+    Block *aux;
+
+    ofstream sequencefile;
+    sequencefile.open("sequence.txt");
+
+    if (!sequencefile)
+    {
+        cout << "Arquivo não pode ser aberto" << endl;
+        abort();
+    }
+
+    aux = boolean_list->first->prox;
+    sequencefile << "\nLista de palavras com suas codificações booleana: " << endl;
+    while (aux != NULL)
+    {
+        sequencefile << "Palavra: " << aux->data.word << " || Booleana: " << aux->data.sequence << endl;
+        aux = aux->prox;
+    }
+    sequencefile.close();
+}
+
+void ReadDocument(Lista *l, Huffman *huffman)
 {
     Item aux;
     Block *aux2;
@@ -150,8 +185,10 @@ void ReadDocument(Lista *l)
     double normalization = 0;
     vector<string> tokens;
     vector<string> verified_words;
-    vector<string> words;
-    vector<double> freq;
+    No *tree;
+    Lista boolean_list;
+
+    FLVazia(&boolean_list);
 
     file.open("document.txt");
 
@@ -168,6 +205,7 @@ void ReadDocument(Lista *l)
             }
         }
     }
+
 
     // the recurrence will be checked by taking one by one, traversing the entire text counting the recurrence
 
@@ -210,7 +248,6 @@ void ReadDocument(Lista *l)
         }
     }
 
-    InsertionSort(l);
 
     // search for maximum repetition
     aux2 = l->first->prox;
@@ -242,13 +279,55 @@ void ReadDocument(Lista *l)
     {
         normalization = (aux2->data.repetition_number / (max_repetition - min_repetition));
         aux2->data.repetition_number = normalization;
-        words.push_back(aux2->data.word);
-        freq.push_back(aux2->data.repetition_number);
         aux2 = aux2->prox;
     }
 
-    int size = sizeof(words) / sizeof(words[0]);
-    HuffmanCodes(words, freq, size);
+    FillHuffman(l, huffman); // fill the huffman struct and sort the number of repetitions
+
+    tree = HuffmanTree(huffman);
+
+    GenerateSequence(&boolean_list, tree, "");
+    PrintSequence(&boolean_list);
+    
+    WriteBinaryFile(&boolean_list, tokens);
+}
+
+void WriteBinaryFile(Lista *boolean_list, vector<string> tokens){
+
+    Block *aux;
+    FILE *binary_file = fopen("compact_text.bin", "wb");
+    vector<bool> boolean_sequence;
+
+    if(!binary_file){
+        cout << "Arquivo não pode ser aberto" << endl;
+        abort();
+    }
+
+    for (size_t i = 0; i < tokens.size(); i++)
+    {
+        aux = boolean_list->first->prox;
+        while (aux != NULL)
+        {
+            if(tokens.at(i) == aux->data.word){
+                for(size_t j = 0; j < aux->data.sequence.size(); j++){
+                    if (aux->data.sequence.at(j) == '0')
+                    {
+                        boolean_sequence.push_back(false);
+                    }
+                    else if (aux->data.sequence.at(j) == '1'){
+                        boolean_sequence.push_back(true);
+                    }
+                }
+                for(size_t k = 0; k < boolean_sequence.size(); k++){
+                    bool char_boolean = boolean_sequence.at(k);
+                    fwrite(&char_boolean, sizeof(bool), 1, binary_file);
+                }
+                boolean_sequence.clear();
+            }
+            aux = aux->prox;
+        }
+    }
+    fclose(binary_file);
 }
 
 string WordTreatment(string word)
