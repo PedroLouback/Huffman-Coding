@@ -7,40 +7,33 @@
 #include <unordered_map>
 #include <vector>
 #include <sstream>
-
+#include <assert.h>
 #include "list.hpp"
 
 using namespace std;
 
-class QueueNode
+typedef struct no
 {
-public:
     Item group;
-    QueueNode *left, *right;
-};
+    struct no *left, *right, *prox;
+} No;
 
-class Queue
+typedef struct
 {
-public:
-    int front, rear;
-    int capacity;
-    QueueNode **array;
-};
+    No *first;
+    int size;
+} Huffman;
 
-QueueNode *newNode(string word, double repetition_number);
-Queue *createQueue(int capacity);
-int isSizeOne(Queue *queue);
-int isEmpty(Queue *queue);
-int isFull(Queue *queue);
-void InsertQueue(Queue *queue, QueueNode *item);
-QueueNode *getFront(Queue *queue);
-QueueNode *findMin(Queue *firstQueue, Queue *secondQueue);
-int isLeaf(QueueNode *root);
-void printArr(int arr[], int n);
-QueueNode *HuffmanTree(vector<string> words, vector<double> freq, int size);
-void printCodes(QueueNode *root, int arr[], int top);
-void HuffmanCodes(vector<string> words, vector<double> freq, int size);
-void ReadDocument(Lista *l);
+void CreateHuffman(Huffman *huffman);
+void InsertSorted(Huffman *huffman, No *no);
+void FillHuffman(Lista *l, Huffman *huffman);
+void PrintHuffman(Huffman *Huffman);
+void PrintTree(No *raiz, int size);
+No *RemoveHuffman(Huffman *huffman);
+void GenerateSequence(Lista *l, No *raiz, string way);
+void PrintSequence();
+void ReadDocument(Lista *l, Huffman *huffman);
+void WriteBinaryFile(Lista *boolean_list, vector<string> tokens);
 string WordTreatment(string word);
 
 #endif
