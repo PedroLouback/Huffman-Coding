@@ -206,6 +206,7 @@ void ReadDocument(Lista *l, Huffman *huffman)
         }
     }
 
+    tokens = RemoveStopWords(tokens);
 
     // the recurrence will be checked by taking one by one, traversing the entire text counting the recurrence
 
@@ -248,7 +249,6 @@ void ReadDocument(Lista *l, Huffman *huffman)
         }
     }
 
-
     // search for maximum repetition
     aux2 = l->first->prox;
     max_repetition = aux2->data.repetition_number;
@@ -288,17 +288,50 @@ void ReadDocument(Lista *l, Huffman *huffman)
 
     GenerateSequence(&boolean_list, tree, "");
     PrintSequence(&boolean_list);
-    
+
     WriteBinaryFile(&boolean_list, tokens);
 }
 
-void WriteBinaryFile(Lista *boolean_list, vector<string> tokens){
+vector<string> RemoveStopWords(vector<string> tokens)
+{
+
+    ifstream stopwords_file;
+    string line;
+    vector<string> stopwords;
+
+    stopwords_file.open("stopwords.txt");
+
+    if (stopwords_file.is_open())
+    {
+        while (!stopwords_file.eof())
+        {
+            getline(stopwords_file, line);
+            stopwords.push_back(line);
+        }
+    }
+
+    for (size_t i = 0; i < stopwords.size(); i++)
+    {
+        for (size_t j = 0; j < tokens.size(); j++)
+        {
+            if (stopwords.at(i) == tokens.at(j))
+            {
+                tokens.erase(tokens.begin() + j);
+            }
+        }
+    }
+    return tokens;
+}
+
+void WriteBinaryFile(Lista *boolean_list, vector<string> tokens)
+{
 
     Block *aux;
     FILE *binary_file = fopen("compact_text.bin", "wb");
     vector<bool> boolean_sequence;
 
-    if(!binary_file){
+    if (!binary_file)
+    {
         cout << "Arquivo não pode ser aberto" << endl;
         abort();
     }
@@ -308,17 +341,21 @@ void WriteBinaryFile(Lista *boolean_list, vector<string> tokens){
         aux = boolean_list->first->prox;
         while (aux != NULL)
         {
-            if(tokens.at(i) == aux->data.word){
-                for(size_t j = 0; j < aux->data.sequence.size(); j++){
+            if (tokens.at(i) == aux->data.word)
+            {
+                for (size_t j = 0; j < aux->data.sequence.size(); j++)
+                {
                     if (aux->data.sequence.at(j) == '0')
                     {
                         boolean_sequence.push_back(false);
                     }
-                    else if (aux->data.sequence.at(j) == '1'){
+                    else if (aux->data.sequence.at(j) == '1')
+                    {
                         boolean_sequence.push_back(true);
                     }
                 }
-                for(size_t k = 0; k < boolean_sequence.size(); k++){
+                for (size_t k = 0; k < boolean_sequence.size(); k++)
+                {
                     bool char_boolean = boolean_sequence.at(k);
                     fwrite(&char_boolean, sizeof(bool), 1, binary_file);
                 }

@@ -34,6 +34,7 @@ void GenerateSequence(Lista *l, No *raiz, string way);
 void PrintSequence();
 void ReadDocument(Lista *l, Huffman *huffman);
 void WriteBinaryFile(Lista *boolean_list, vector<string> tokens);
+vector<string> RemoveStopWords(vector<string> tokens);
 string WordTreatment(string word);
 
 #endif
