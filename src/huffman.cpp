@@ -206,7 +206,7 @@ void ReadDocument(Lista *l, Huffman *huffman)
         }
     }
 
-    tokens = RemoveStopWords(tokens);
+    tokens = RemoveVowels(tokens);
 
     // the recurrence will be checked by taking one by one, traversing the entire text counting the recurrence
 
@@ -292,29 +292,29 @@ void ReadDocument(Lista *l, Huffman *huffman)
     WriteBinaryFile(&boolean_list, tokens);
 }
 
-vector<string> RemoveStopWords(vector<string> tokens)
+vector<string> RemoveVowels(vector<string> tokens)
 {
 
-    ifstream stopwords_file;
+    ifstream vowels_file;
     string line;
-    vector<string> stopwords;
+    vector<string> vowels;
 
-    stopwords_file.open("stopwords.txt");
+    vowels_file.open("vowels.txt");
 
-    if (stopwords_file.is_open())
+    if (vowels_file.is_open())
     {
-        while (!stopwords_file.eof())
+        while (!vowels_file.eof())
         {
-            getline(stopwords_file, line);
-            stopwords.push_back(line);
+            getline(vowels_file, line);
+            vowels.push_back(line);
         }
     }
 
-    for (size_t i = 0; i < stopwords.size(); i++)
+    for (size_t i = 0; i < vowels.size(); i++)
     {
         for (size_t j = 0; j < tokens.size(); j++)
         {
-            if (stopwords.at(i) == tokens.at(j))
+            if (vowels.at(i) == tokens.at(j))
             {
                 tokens.erase(tokens.begin() + j);
             }
