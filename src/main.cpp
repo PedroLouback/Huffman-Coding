@@ -11,7 +11,7 @@ int main()
 
     ReadDocument(&l, &huffman);
 
-    cout << "A compactação foi feita e se encontra no arquivo compact_text.bin.\nAs palavras e suas respectivas sequências se encontram em sequence.txt.\n" << endl;
+    cout << "A compactação foi realizada com sucesso e se encontra no arquivo compact_text.bin.\nAs palavras e suas respectivas sequências se encontram em sequence.txt.\n" << endl;
 
     return 0;
 }

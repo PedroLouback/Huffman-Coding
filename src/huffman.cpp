@@ -166,10 +166,10 @@ void PrintSequence(Lista *boolean_list)
     }
 
     aux = boolean_list->first->prox;
-    sequencefile << "\nLista de palavras com suas codificações booleana: " << endl;
+    sequencefile << "\nLista de palavras com suas codificações booleana: \n" << endl;
     while (aux != NULL)
     {
-        sequencefile << "Palavra: " << aux->data.word << " || Booleana: " << aux->data.sequence << endl;
+        sequencefile << "Palavra: " << aux->data.word << " || Codificação: " << aux->data.sequence << endl;
         aux = aux->prox;
     }
     sequencefile.close();

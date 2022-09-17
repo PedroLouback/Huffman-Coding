@@ -82,13 +82,13 @@ A resolução para a codificação binária das palavras é encontrada na funç�
 
 ### • Escrita da codificação binária em um arquivo binário
 
-
+A ultima etapa do código consiste em pegar toda a codificação feita na etapa anterior e escrever essa codificação em formato _booleano_ correspondentes as palavras que são encontradas no arquivo de texto inicial, para a solução desse proposito foi criado a fução __WriteBinaryFile()__ que recebe como parâmetro uma lista que contém as palavras com suas respectivas sequências booleanas e o _vector tokens_ criado no inicio do programa eu contém a tokenização do arquivo de texto a ser codificado. Diante disso, a função inicia com duas estruturas de repetição, sendo um `FOR` e um `WHILE` onde primeiramente o `FOR` irá percorrer o _vector tokens_ e o `WHILE` vai ser necessário para percorrer a lista que a cada posição percorrida vai ser feita a veriricação utilizando a estrutura de decisão `IF` , verificando se cada posição do _vecotr tokens_ corresponde a posição da lista e caso seja correspondente vai ser introduzido um novo `FOR` para converter a sequência que está na lista em tipo _string_ para tipo _bool_ através de um _vector bool_ que vai armazenando a sequência em formato booleano para no fim escrever posição por posição do _vector bool_ no novo arquivo do tipo _.bin_, que ao fim vai ser feita a limpeza desse vector para que possa ser utilizado novamente em uma nova palavra encontrada na verificação de igualdade do texto.
 
 ---
 
 ## Resultados
 
-Após toda a lógica acima ter sido implementada no algoritmo foi possível a obtenção da compactação do arquivo *'document.txt'* como forma de teste onde o mesmo continha o seguinte texto: 
+• Após toda a lógica acima ter sido implementada no algoritmo foi possível a obtenção da compactação do arquivo *'document.txt'* como forma de teste onde o mesmo continha o seguinte texto: 
 
 _Caros amigos, a infinita diversidade da realidade única nos obriga à análise do demônio de Laplace. Por outro lado, a complexidade dos estudos efetuados cumpre um papel essencial na formulação da fundamentação metafísica das representações. Assim mesmo, a forma geral da proposição significativa deverá confirmar as consequências decorrentes do sistema de conhecimento geral._
 
@@ -96,7 +96,13 @@ _Neste sentido, o novo modelo estruturalista aqui preconizado auxilia a prepara�
 
 Onde a partir desse texto foi visualizado que o arquivo _'.txt'_ do mesmo continha um total de **_953 bytes_** e após a compactção realizada pelo algoritmo foi criado um novo arquivo _'.bin'_ chamado *'compact_text.bin'* encontrando um tamanho de **_761 bytes_** do mesmo, concluindo que a compactação foi feita com sucesso, tendo um total de **_191 bytes_** compactados.
 
--> escrever sobre o arquivo de sequencias
+• Ao ser compilado e executado o programa irá gerar a seguinte mensagem:
+
+<p align="center">
+<img src="imgs/code6.png" width="600px"/>
+</p>
+
+Diante disso um arquivo de texto chamado _'sequence.txt'_ irá ser criado no qual vai informar ao usuário todas as palavras presentes no texto com suas respectivas codificações booleanas, esse arquivo abre a possibilidade do usuário de consultar as codificações encontradas no arquivo binário.
 
 ---
 
